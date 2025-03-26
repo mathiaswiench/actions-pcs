@@ -1,8 +1,8 @@
+from pprint import pprint
 import logging
 import logging.handlers
-import os
-
-import requests
+from procyclingstats import Race, RaceClimbs, Stage
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -12,23 +12,23 @@ logger_file_handler = logging.handlers.RotatingFileHandler(
     backupCount=1,
     encoding="utf8",
 )
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 logger_file_handler.setFormatter(formatter)
 logger.addHandler(logger_file_handler)
 
-try:
-    SOME_SECRET = os.environ["SOME_SECRET"]
-except KeyError:
-    SOME_SECRET = "Token not available!"
-    #logger.info("Token not available!")
-    #raise
+def scraper():
+    # RACE_URL can be replaced with any valid stage race URL
+    RACE_URL = "race/volta-a-catalunya/2025"
+    race = Race(f"{RACE_URL}/overview")
+    stages = race.stages()
+    today = datetime.today().strftime('%Y-%m-%d')
+    for stage in stages:
+        url = stage.get('stage_url')
+        stage_detail = Stage(url)
+        if stage_detail.date() == today:
+            logger.info(f'Winner: {stage_detail.results()[0].get('rider_name')} with {stage_detail.avg_speed_winner()} km/h')
+
 
 
 if __name__ == "__main__":
-    logger.info(f"Token value: {SOME_SECRET}")
-
-    r = requests.get('https://weather.talkpython.fm/api/weather/?city=Berlin&country=DE')
-    if r.status_code == 200:
-        data = r.json()
-        temperature = data["forecast"]["temp"]
-        logger.info(f'Weather in Berlin: {temperature}')
+    scraper()
