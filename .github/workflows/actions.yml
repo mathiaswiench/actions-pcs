@@ -1,8 +1,27 @@
-name: run main.py
+name: scarpe pcs
 
 on:
-  schedule:
-    - cron: '30 21 * * *' # At 21:30 today
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
+      tags:
+        description: 'Test scenario tags'
+        required: false
+        type: boolean
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
+  # schedule:
+  #   - cron: '30 21 * * *' # At 21:30 today
 
 jobs:
   build:
