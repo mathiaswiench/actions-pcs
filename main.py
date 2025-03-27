@@ -26,7 +26,7 @@ def scraper():
         url = stage.get('stage_url')
         stage_detail = Stage(url)
         if stage_detail.date() == today:
-            logger.info(f'Winner: {stage_detail.results()[0].get('rider_name')} with {stage_detail.avg_speed_winner()} km/h')
+            logger.info(f'Winner: {stage_detail.results()[0].get("rider_name")} with {stage_detail.avg_speed_winner()} km/h')
 
 
 
